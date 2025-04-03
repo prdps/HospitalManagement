@@ -1,0 +1,78 @@
+@page "/book-appointment"
+@using HospitalManagement.Model
+@inject NavigationManager Naviagtion
+@inject HospitalService HospitalService
+@rendermode InteractiveServer
+
+<h3>Book Appointment</h3>
+<button class="btn btn-primary" @onclick="goToHome">
+    Back
+</button>
+
+<div class="container">
+    <div class="mb-3">
+        <label class="form-label">Patient</label>
+        <select class="form-control" @bind="@newAppointment.PatientId">
+            <option value="">-- Select Patient --</option>
+            @foreach (var patient in HospitalService.Patients)
+            {
+                <option value="@patient.Id">@patient.Name</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Doctor</label>
+        <select class="form-control" @bind="@newAppointment.DoctorId">
+            <option value="">-- Select Doctor --</option>
+            @foreach (var doctor in HospitalService.Doctors)
+            {
+                <option value="@doctor.Id">@doctor.Name</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Date</label>
+        <input type="datetime-local" class="form-control" @bind="newAppointment.AppointmentDate">
+    </div>
+    <button class="btn btn-primary" @onclick="BookAppointment">Book</button>
+</div>
+
+<h3>Appointments</h3>
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var appointment in HospitalService.Appointments)
+        {
+            var patient = HospitalService.Patients.FirstOrDefault(p => p.Id == appointment.PatientId);
+            var doctor = HospitalService.Doctors.FirstOrDefault(d => d.Id == appointment.DoctorId);
+
+            <tr>
+                <td>@(patient?.Name ?? "Unknown")</td>
+                <td>@(doctor?.Name ?? "Unknown")</td>
+                <td>@appointment.AppointmentDate</td>
+                <td>@appointment.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Appointment newAppointment = new();
+
+    private void goToHome(){
+        Naviagtion.NavigateTo("/PatientManager");
+    }
+
+    private void BookAppointment()
+    {
+        HospitalService.BookAppointment(newAppointment);
+        newAppointment = new();
+    }
+}

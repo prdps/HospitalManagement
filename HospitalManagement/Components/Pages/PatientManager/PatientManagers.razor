@@ -1,0 +1,36 @@
+﻿@page "/PatientManager"
+@using System.Diagnostics
+@namespace HospitalManagement.Components.Pages
+
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h2>Manage Booking</h2>
+
+<div class="container d-flex justify-content-between"> 
+    <button class="btn btn-primary" @onclick="(args)=>gotoPage(addresses[0])">Book Appointment</button>
+    <button class="btn btn-primary" @onclick="(args)=>gotoPage(addresses[1])">Register Patient</button>
+</div>
+
+@code {
+
+    string[] addresses = {
+        "/book-appointment",
+        "/register-patients" // Fixed invalid route
+    };
+
+    private async Task gotoPage(string address)
+    {
+        try
+        {
+            await Task.Run(() => Navigation.NavigateTo(address));
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message);
+        }
+    }
+
+
+}
+

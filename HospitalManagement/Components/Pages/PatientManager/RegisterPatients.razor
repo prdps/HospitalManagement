@@ -1,0 +1,71 @@
+@page "/register-patients"
+@inject HospitalService HospitalService
+@using HospitalManagement.Model;
+@inject NavigationManager Naviagtion
+@rendermode InteractiveServer
+
+
+<h3>Register New Patient</h3>
+<button class="btn btn-primary" @onclick="goToHome">
+    Back
+</button>
+<div class="container">
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" @bind="newPatient.Name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Age</label>
+        <input type="number" class="form-control" @bind="newPatient.Age">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Gender</label>
+        <select class="form-control" @bind="newPatient.Gender">
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Contact</label>
+        <input type="text" class="form-control" @bind="newPatient.Contact">
+    </div>
+    <button class="btn btn-primary" @onclick="RegisterPatient">Register</button>
+</div>
+
+<h3>Registered Patients</h3>
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Contact</th>
+            <th>Registered On</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var patient in HospitalService.Patients)
+        {
+            <tr>
+                <td>@patient.Name</td>
+                <td>@patient.Age</td>
+                <td>@patient.Gender</td>
+                <td>@patient.Contact</td>
+                <td>@patient.RegisteredOn</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Patient newPatient = new();
+    private void goToHome(){
+        Naviagtion.NavigateTo("/PatientManager");
+    }
+    private void RegisterPatient()
+    {
+        HospitalService.AddPatient(newPatient);
+        newPatient = new();
+    }
+}

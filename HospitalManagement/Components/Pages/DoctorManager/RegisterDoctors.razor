@@ -1,0 +1,84 @@
+@page "/register-doctor"
+@using BlazorBootstrap
+@using HospitalManagement.Model
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject HospitalService hservice
+@using System.Diagnostics
+
+<h3>Register Doctor</h3>
+
+<EditForm Model="newDoctor" OnValidSubmit="RegisterDoctor">
+    <div>
+        <label for="name">Name:</label>
+        <InputText id="name" @bind-Value="newDoctor.Name" class="form-control" />
+    </div>
+    <div>
+        <label for="specialty">Specialty:</label>
+        <InputText id="specialty" @bind-Value="newDoctor.Specialty" class="form-control" />
+    </div>
+    <div>
+        <label for="roomNumber">Room Number:</label>
+        <InputNumber id="roomNumber" @bind-Value="newDoctor.RoomNumber" class="form-control" />
+    </div>
+    <div>
+        <label for="phoneNumber">Phone Number:</label>
+        <InputText id="phoneNumber" @bind-Value="newDoctor.PhoneNumber" class="form-control" />
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <InputText id="email" @bind-Value="newDoctor.Email" class="form-control" />
+    </div>
+    <div>
+        <label for="address">Address:</label>
+        <InputText id="address" @bind-Value="newDoctor.Address" class="form-control" />
+    </div>
+    <div>
+        <label for="qualifications">Qualifications:</label>
+        <InputText id="qualifications" @bind-Value="newDoctor.Qualifications" class="form-control" />
+    </div>
+    <div>
+        <label for="experience">Experience:</label>
+        <InputText id="experience" @bind-Value="newDoctor.Experience" class="form-control" />
+    </div>
+    <div>
+        <label for="availability">Availability:</label>
+        <InputText id="availability" @bind-Value="newDoctor.Availability" class="form-control" />
+    </div>
+    <div>
+        <label for="shiftInTime">Shift In Time:</label>
+        <InputDate id="shiftInTime" @bind-Value="newDoctor.ShiftInTime" class="form-control"Disabled="false" />
+    </div>
+    <div>
+        <label for="shiftOutTime">Shift Out Time:</label>
+        <InputDate id="shiftOutTime" @bind-Value="newDoctor.ShiftOutTime" class="form-control" Disabled="false"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+    <button class="btn btn-primary" @onclick="goToHome">Back </button>
+</EditForm>
+
+@code {
+    private Doctor newDoctor = new Doctor();
+    
+    private string errorMessage = string.Empty;
+
+    private void goToHome(){
+        Navigation.NavigateTo("/DoctorManager");
+    }
+
+    private void RegisterDoctor()
+    {
+        try
+        {
+            // Call the service to register the doctor
+            hservice.AddDoctor(newDoctor);
+            // Reset the form model after successful submission
+            newDoctor = new Doctor(); 
+        }
+        catch (Exception ex)
+        {
+            // Handle any error during registration
+            errorMessage = "An error occurred while registering the doctor: " + ex.Message;
+        }
+    }
+}

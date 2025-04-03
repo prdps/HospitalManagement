@@ -1,0 +1,84 @@
+@page "/DoctorManager"
+@using HospitalManagement.Model
+@using System.Diagnostics
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Doctor Manager</h3>
+<div class="container d-flex justify-content-between"> 
+    <button class="btn btn-primary" @onclick="(args)=>gotoPage(addresses[0])">Add Doctor</button>
+</div>
+<div>
+    <h4>Doctor List with Shift Schedules </h4>
+    <p>Total Doctors: @Doctors.Count</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th> Doctor ID </th>
+                <th> Doctor Name </th>
+                <th> Specialty </th>
+                <th> Shift Schedule </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var doctor in Doctors)
+            {
+                <tr>
+                    <td>@doctor.Id</td>
+                    <td>@doctor.Name</td>
+                    <td>@doctor.Specialty</td>
+                    <td>@doctor.sheduleTime</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+@code {
+    private List<Doctor> Doctors = new List<Doctor>
+    {
+        new Doctor { Id = 1, Name = "Dr. Smith", Specialty = "Cardiology", sheduleTime = "Morning" },
+        new Doctor { Id = 2, Name = "Dr. Johnson", Specialty = "Neurology", sheduleTime = "Evening" }
+    };
+
+    private string NewDoctorName;
+    private string NewDoctorSpecialty;
+    private string NewDoctorShift;
+ private string[] addresses = {
+        "/register-doctor",
+        "/register-patients"
+    };
+    private async Task gotoPage(string address)
+    {
+        try
+        {
+            await Task.Run(() => Navigation.NavigateTo(address));
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message);
+        }
+    }
+    private void AddDoctor()
+    {
+        if (!string.IsNullOrWhiteSpace(NewDoctorName) && 
+            !string.IsNullOrWhiteSpace(NewDoctorSpecialty) && 
+            !string.IsNullOrWhiteSpace(NewDoctorShift))
+        {
+            Doctors.Add(new Doctor
+            {
+                Id = Doctors.Count + 1,
+                Name = NewDoctorName,
+                Specialty = NewDoctorSpecialty,
+                sheduleTime = NewDoctorShift
+            });
+
+            NewDoctorName = string.Empty;
+            NewDoctorSpecialty = string.Empty;
+            NewDoctorShift = string.Empty;
+        }
+    }
+}
+
